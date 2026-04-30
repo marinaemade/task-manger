@@ -1,0 +1,38 @@
+name: React CI Workflow
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for SonarQube to see Git history
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 4.3 Requirement: Build Step
+      - name: Install Dependencies
+        run: npm install
+
+      # 4.3 Requirement: Test Step
+      - name: Run Unit Tests
+        run: npm test -- --watchAll=false
+
+      # 4.3 Requirement: Code Quality Step (SonarQube)
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
