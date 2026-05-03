@@ -28,7 +28,7 @@ jobs:
 
       # 4.3 Requirement: Test Step
       - name: Run Unit Tests
-        run: npm test -- --watchAll=false
+        run: npm test
 
       # 4.3 Requirement: Code Quality Step (SonarQube)
       - name: SonarQube Scan
